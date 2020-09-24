@@ -6,10 +6,13 @@ La ruta en cuestión es /launderers/:id. Lo agregaremos después de las demás r
 
 ```js
 // ... inside of routes/laundry.js
-    res.render('laundry/launderers', {
-      launderers: launderersList
+    res.render("laundry/launderers", {
+      launderers: launderersList,
     });
-  });
+  } catch (error) {
+    next(err);
+    return;
+  }
 });
 
 router.get("/launderers/:id", async (req, res, next) => {
@@ -36,9 +39,9 @@ Aspectos destacados de la ruta /launderers/:id
     
     Líneas 67: llama al método findById() de Mongoose para recuperar los detalles del lavador.
     
-    Líneas 69-71: renderiza la plantilla views/laundry/launderer-profile.hbs
+    Líneas 70-72: renderiza la plantilla views/laundry/launderer-profile.hbs
     
-    Líneas 70: pasa la información del perfil del lavandero (theUser) como la variable local theLaunderer.
+    Líneas 71: pasa la información del perfil del lavandero (theUser) como la variable local theLaunderer.
 
 Visite la página /launderers/:id (link de Schedule a Pickup) y verá un formulario para programar una recolección con ese usuario. Cuando se envíe ese formulario, debemos guardar la recolección de ropa en la base de datos. Ya tenemos el código para el modelo LaundryPickup en models/laundry-pickup.js. Solo necesitamos requerirlo y usarlo en nuestra ruta POST.
 
@@ -46,12 +49,9 @@ Agregamos esta línea en routes/laundry.js:
 
 ```js
 // routes/laundry.js
-const express = require('express');
-
 const User = require('../models/user');
 const LaundryPickup = require('../models/laundry-pickup'); // <= AÑADIR
 
-const router = express.Router();
 // ...
 ```
 
@@ -75,7 +75,7 @@ router.get("/launderers/:id", async (req, res, next) => {
 });
 
 
-router.post("/laundry-pickups", (req, res, next) => {
+router.post("/laundry-pickups", withAuth, (req, res, next) => {
   const pickupInfo = {
     pickupDate: req.body.pickupDate,
     launderer: req.body.laundererId,

@@ -12,10 +12,11 @@ Añada la nueva ruta GET /launderers después de las demás rutas en routes/laun
 
 ```js
 // ... inside of routes/laundry.js
-    req.session.currentUser = theUser;
-
-    res.redirect('/dashboard');
-  });
+   res.redirect("/dashboard");
+  } catch (error) {
+    next(err);
+    return;
+  }
 });
 
 
@@ -37,11 +38,11 @@ module.exports = router;
 
 Aspectos destacados de la ruta /launderers:
 
-    Línea 47: consulta usuarios cuya propiedad isLaunderer es verdadera.
+    Línea 54: consulta usuarios cuya propiedad isLaunderer es verdadera.
     
-    Líneas 53-55: renderiza la plantilla views/laundry/launderers.hbs
+    Líneas 55-57: renderiza la plantilla views/laundry/launderers.hbs
     
-    Líneas 53: pasa los resultados de la consulta (launderersList) como la variable local launderers.
+    Líneas 56: pasa los resultados de la consulta (launderersList) como la variable local launderers.
 
 
 Visite la página para ver la lista de lavanderos.

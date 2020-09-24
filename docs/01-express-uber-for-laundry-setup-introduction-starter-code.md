@@ -1,8 +1,8 @@
 # Metas de aprendizaje
 
     Agregar autenticación de usuario básica a una aplicación Express.
-    Crear sesiones en una aplicación Express.
-    Almacenar la información del usuario en la sesión y utilizarla en algunas rutas.
+    Crear web tokens en una aplicación Express.
+    Almacenar la información del usuario en el token y gurdarlo en una cookie.
     Evitar que usuarios anónimos (sin estar logueados) accedan a secciones de su aplicación.
 
 ## Setup
@@ -83,8 +83,7 @@ El código inicial para este proyecto incluye:
         │   └── stylesheets
         │       └── style.css
         ├── routes
-        │   ├── index.js
-        │   └── users.js
+        │   └── index.js
         └── views
             ├── auth
             │   ├── login.hbs

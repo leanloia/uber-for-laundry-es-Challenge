@@ -39,9 +39,6 @@ router.get("/dashboard", withAuth, async (req, res, next) => {
   } else {
     // en caso contrario (si no hay token) redirigimos a la home
     res.redirect("/");
-    /* res.status(401).render("home", {
-      errorMessage: "Unauthorized: No token provided",
-    }); */
   }
 });
 
@@ -51,12 +48,12 @@ router.post('/launderers', (req, res, next) => {
 
 Aspectos destacados de la nueva ruta /dashboard:
 
-    Líneas 41-45: cambia la consulta en función de si eres o no un lavandero. Si el usuario es un lavador de ropa, busca recoger ropa para lavar. De lo contrario, muestra las recogidas de ropa que pidió.
-    Líneas 47-50: llama a varios métodos Mongoose para crear una consulta más complicada, que finalice con una llamada al método exec() para proporcionar nuestro callback.
-    Líneas 48-49: dado que las propiedades del usuario y del lavandero son referencias a otros documentos, estamos solicitando que esas referencias se rellenen previamente con la propiedad de nombre del modelo User.
-    Línea 50: ordena por fecha de recogida en orden ascendente (las fechas más lejanas son las últimas).
-    Líneas 38-40: renderiza la plantilla views/laundry/dashboard.hbs como antes pero esta vez dentro de la promise.
-    Línea 53: pasa los resultados de la consulta (pickupDocs) como la variable local pickups.
+    Líneas 20-24: cambia la consulta en función de si eres o no un lavandero. Si el usuario es un lavador de ropa, busca recoger ropa para lavar. De lo contrario, muestra las recogidas de ropa que pidió.
+    Líneas 26-30: llama a varios métodos Mongoose para crear una consulta más complicada, y finaliza con una llamada al método exec().
+    Líneas 27-28: dado que las propiedades del usuario y del lavandero son referencias a otros documentos, estamos solicitando que esas referencias se rellenen previamente con la propiedad de nombre del modelo User.
+    Línea 29: ordena por fecha de recogida en orden ascendente (las fechas más lejanas son las últimas).
+    Líneas 32-34: renderiza la plantilla views/laundry/dashboard.hbs.
+    Línea 33: pasa los resultados de la consulta (pickupDocs) como la variable local pickups.
 
 Ahora que estamos consultando información adicional en la ruta, necesitamos mostrarla en la vista.
 

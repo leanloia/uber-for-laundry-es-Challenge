@@ -54,17 +54,17 @@ Nuestra ruta POST es /launderers. Agreguemos eso ahora. Aquí están nuestras ru
 ```js
 // routes/laundry.js
 const express = require('express');
+const router = express.Router();
+
 const withAuth = require("../helpers/middleware");
 
 const User = require('../models/user');
-
-const router = express.Router();
 
 router.get('/dashboard', (req, res, next) => {
   res.render('laundry/dashboard');
 });
 
-router.post("/launderers", withAuth, (req, res, next) => {
+router.post("/launderers", withAuth, async (req, res, next) => {
   const userId = req.userID;
   const laundererInfo = {
     fee: req.body.fee,
@@ -72,12 +72,12 @@ router.post("/launderers", withAuth, (req, res, next) => {
   };
 
   try {
-    const theUser = User.findByIdAndUpdate(userId, laundererInfo, {
+    const theUser = await User.findByIdAndUpdate(userId, laundererInfo, {
       new: true,
     });
 
     req.user = theUser;
-    //console.log("now is a launderer", req.user);
+    //console.log("now is a launderer", theUser);
     res.redirect("/dashboard");
   } catch (error) {
     next(err);
@@ -85,21 +85,20 @@ router.post("/launderers", withAuth, (req, res, next) => {
   }
 });
 
-
 module.exports = router;
 ```
 
 Aspectos destacados de esta ruta POST:
 
-    Línea 10: obtiene el _id del usuario actual.
+    Línea 14: obtiene el _id del usuario actual.
     
-    Líneas 11-14: prepara la información actualizada con la precio del formulario y isLaunderer está hardcoded como verdadero.
+    Líneas 15-18: prepara la información actualizada con la precio del formulario y isLaunderer está hardcoded como verdadero.
     
-    Línea 17: llama al método findByIdAndUpdate() de Mongoose para realizar las actualizaciones.
+    Línea 21: llama al método findByIdAndUpdate() de Mongoose para realizar las actualizaciones.
     
-    Línea 21: actualiza la información del usuario actual. Esto funciona en conjunto con la opción { new: true } de la línea 18 para obtener la información actualizada del usuario en el callback.
+    Línea 25: actualiza la información del usuario actual. Esto funciona en conjunto con la opción { new: true } de la línea 22 para obtener la información actualizada del usuario en el callback.
     
-    Línea 23: redirecciona de nuevo al dashboard.
+    Línea 27: redirecciona de nuevo al dashboard.
 
 Ahora que el código está en su lugar, ¡intenta convertirte en un lavandero! Podemos verificar que funcionó yendo a MongoDB Compass y consultando la base de datos:
 
@@ -166,6 +165,7 @@ router.get("/dashboard", withAuth, async (req, res, next) => {
   // si existe req.user, quiere decir que el middleware withAuth ha devuelto el control a esta ruta y renderizamos la vista secret con los datos del user
   if (req.userID) {
     try {
+       // actualizamos la variable res.locals.currentUserInfo con los datos actualizados del usuario
       const userUpdated = await User.findById({ _id: req.userID });
       res.locals.currentUserInfo = userUpdated;
 
@@ -190,8 +190,8 @@ Este middleware se ejecuta antes que cualquiera de nuestras rutas.
 
 Destacar:
 
-    Líneas 32-37: si hay un user en req.user (logueado), renderiza el dashboard.
+    Líneas 11-18: si hay un id en req.userID (logueado), renderiza el dashboard.
     
-    Línea 44: si no hay ningún usuario en req.user (anónimo), redirige a la página home.
+    Línea 24: si no hay ningún usuario en req.user (anónimo), redirige a la página home.
 
 Siguiente - Encuentra un Launderer.

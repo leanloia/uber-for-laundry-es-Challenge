@@ -65,12 +65,12 @@ Ahora podemos finalizar nuestra ruta POST la cual recibirá el envío del formul
 ```js
 // routes/auth.js
 const express = require('express');
-const bcrypt = require('bcryptjs');
-
-const User = require('../models/user');
-
 const router = express.Router();
-const bcryptSalt = 10;
+
+const bcrypt = require('bcryptjs'); // <<<< ESTA LINEA
+const bcryptSalt = 10; // <<<< ESTA LINEA
+
+const User = require('../models/user'); // <<<< ESTA LINEA
 
 router.get('/signup', (req, res, next) => {
   res.render('auth/signup', {
@@ -78,7 +78,7 @@ router.get('/signup', (req, res, next) => {
   });
 });
 
-router.post("/signup", async (req, res, next) => {
+router.post("/signup", async (req, res, next) => { // <<<< ESTA RUTA
   const { name, email, password } = req.body;
 
   if (email === "" || password === "" || name === "") {
@@ -130,26 +130,26 @@ module.exports = router;
 
 Señalemos algunas cosas interesantes sobre el código que hemos agregado:
 
-    Líneas 2 y 4: requieren bcryptjs y el modelo User para usar en nuestra ruta POST.
+    Líneas 4 y 7: se requieren bcryptjs y el modelo User para usar en nuestra ruta POST.
     
-    Línea 19: define nuestra ruta POST con el URL /signup. Puede tener el mismo URL porque usa un verbo HTTP diferente (GET vs. POST).
+    Línea 15: define nuestra ruta POST con el URL /signup. Puede tener el mismo URL porque usa un verbo HTTP diferente (GET vs. POST).
     
-    Línea 20: crea variables para los inputs enviados por el formulario (almacenados en req.body).
+    Línea 16: crea variables para los inputs enviados por el formulario (almacenados en req.body).
     
-    Líneas 39-40: utiliza los métodos bcrypt genSaltSync() y hashSync() para encriptar la contraseña enviada.
+    Líneas 35-36: utiliza los métodos bcrypt genSaltSync() y hashSync() para encriptar la contraseña enviada.
     
-    Líneas 42-48: crea una instancia del modelo User con las propiedades correctas (valores del envío del formulario).
+    Líneas 38-44: crea una instancia del modelo User con las propiedades correctas (valores del envío del formulario).
     
-    Línea 50: llama al método modelo save() de Mongoose para realmente guardar al nuevo usuario en la base de datos.
+    Línea 46: llama al método modelo save() de Mongoose para realmente guardar al nuevo usuario en la base de datos.
     
-    Línea 58: si todo sale según lo planeado, redirige nuevamente a la página de inicio.
+    Línea 54: si todo sale según lo planeado, redirige nuevamente a la página de inicio.
 
 
 Todo eso asumiendo de que no había ningún problema con el envío. Nuestro código verifica las diferentes situaciones en las que no queremos guardar a un nuevo usuario. En esos casos, volvemos a renderizar el formulario de registro con un mensaje de error. Para eso estaba la variable local errorMessage. Estos son los problemas que estamos buscando:
 
-    Líneas 22-27: Lo primero que verificamos es si el email o la contraseña están en blanco.
-    Líneas 32-37: Comprueba si ya hay un usuario con el email enviado.
-    Líneas 51-56: Verifica los errores de la base de datos cuando guardemos.
+    Líneas 18-23: Lo primero que verificamos es si el email o la contraseña están en blanco.
+    Líneas 28-33: Comprueba si ya hay un usuario con el email enviado.
+    Líneas 56-59: Verifica los errores de la base de datos cuando guardemos.
 
 Ahora que el código de registro está en su lugar, intente registrarse. Podemos verificar que el registro funcionó yendo a MongoDB Compass y consultando la base de datos:
 

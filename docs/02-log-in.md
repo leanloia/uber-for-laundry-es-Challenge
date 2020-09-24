@@ -1,6 +1,6 @@
 # Iteración #2: Log In
 
-Ahora que nos hemos registrado, necesitamos poder iniciar sesión. La ruta para la página de inicio de sesión será /login. Como está relacionado con la autenticación, queremos incluirlo en nuestro archivo routes/auth.js. En las líneas 64-68 puede ver nuestra ruta de inicio de sesión:
+Ahora que nos hemos registrado, necesitamos poder iniciar sesión. La ruta para la página de inicio de sesión será /login. Como está relacionado con la autenticación, queremos incluirlo en nuestro archivo routes/auth.js. En las líneas 62-66 puede ver nuestra ruta de inicio de sesión:
 
 ```js
 // ... inside of routes/auth.js
@@ -39,8 +39,8 @@ Ahora necesitaremos requerir el paquete en routes/auth.js:
 
 ```js
 // ... inside of app.js
-const express = require("express");
 const bcrypt = require("bcryptjs");
+const bcryptSalt = 10;
 
 const jwt = require("jsonwebtoken"); // <<<< ESTA LINEA
 
@@ -49,7 +49,7 @@ const jwt = require("jsonwebtoken"); // <<<< ESTA LINEA
 
 A continuación, crearemos nuestro propio middleware express personalizado que se ubicará entre una solicitud y una ruta protegida y verificaremos si la solicitud está autorizada.
 
-Esta función de middleware buscará el token en las cookies de solicitud y luego lo validará.
+Esta función de middleware buscará el token en las cookies de request y luego lo validará.
 
 En la carpeta raíz, crearemos el archivo /helpers/middleware.js
 
@@ -59,6 +59,8 @@ En la carpeta raíz, crearemos el archivo /helpers/middleware.js
 const jwt = require("jsonwebtoken");
 
 const secret = process.env.SECRET_SESSION;
+
+const User = require("../models/user");
 
 const withAuth = async (req, res, next) => {
   try {
@@ -118,7 +120,7 @@ router.get('/login', (req, res, next) => {
   });
 });
 
-router.post("/login", async function (req, res) {
+router.post("/login", async function (req, res) { // <<<< ESTA RUTA
   // desestructuramos el email y el password de req.body
   const { email, password } = req.body;
 
@@ -169,11 +171,11 @@ module.exports = router;
 
 Aspectos destacados de esta ruta POST:
 
-    Línea 86: encuentra al usuario por su email.
+    Línea 84: encuentra al usuario por su email.
     
-    Línea 95: utiliza el método compareSync() para verificar la contraseña.
+    Línea 93: utiliza el método compareSync() para verificar la contraseña.
     
-    Línea 105: si todo funciona, envia en la respuesta una cookie con el token.
+    Línea 103: si todo funciona, envia en la respuesta una cookie con el token.
 
 Así que hemos iniciado sesión, pero no lo sabría simplemente mirando la página de inicio. ¡Se ve igual que antes! Necesitamos personalizar la homepage para los usuarios registrados. Sin embargo, antes de hacer eso, hagamos que sea más fácil verificar el estado de inicio de sesión en la vista.
 
