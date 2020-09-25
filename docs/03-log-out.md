@@ -9,7 +9,7 @@ Añadir el siguiente:
 const withAuth = require("../helpers/middleware");
 ...
 
-router.get("/logout", withAuth, function (req, res) {
+router.get("/logout", withAuth, (req, res) => {
   // seteamos el token con un valor vacío y una fecha de expiración en el pasado (Jan 1st 1970 00:00:00 GMT)
   res.cookie("token", "", { expires: new Date(0) });
   res.redirect("/");

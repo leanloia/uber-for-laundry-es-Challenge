@@ -26,8 +26,12 @@ La ruta GET /login renderiza un formulario que el usuario enviará para autentic
 
 El primer paso, necesitamos una cadena secreta para usar al firmar los tokens.
 
-Usaremos la constante process.env.SECRET_SESSION definida en el archivo .env
-Si todavía no has creado el archivo .env, puedes hacerlo ahora.
+Usaremos la constante SECRET_SESSION definida en el archivo .env
+Si todavía no has creado el archivo .env, puedes hacerlo ahora y agregar, por ejemplo, este string:
+
+```
+SECRET_SESSION=ironhack
+```
 
 A continuación, debemos verificar que esté instalada la biblioteca jsonwebtoken que nos permitirá emitir y verificar tokens web JSON:
 
@@ -103,7 +107,7 @@ Debemos agregar este middleware en nuestra ruta de index:
 const withAuth = require("../helpers/middleware");
 
 /* GET home page. */
-router.get('/', withAuth, function(req, res, next) {
+router.get('/', withAuth, (req, res, next) => {
   res.render('index', { title: 'Uber for Laundry' });
 });
 ```
@@ -120,7 +124,7 @@ router.get('/login', (req, res, next) => {
   });
 });
 
-router.post("/login", async function (req, res) { // <<<< ESTA RUTA
+router.post("/login", async (req, res) => { // <<<< ESTA RUTA
   // desestructuramos el email y el password de req.body
   const { email, password } = req.body;
 
