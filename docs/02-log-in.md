@@ -11,8 +11,8 @@ Ahora que nos hemos registrado, necesitamos poder iniciar sesión. La ruta para 
 
 
 router.get('/login', (req, res, next) => {
-  res.render('auth/login', {
-    errorMessage: ''
+  // utilizamos método render para mostrar la view 'login'
+  // declaramos una variable 'errorMessage' y la dejamos vacía por el momento'
   });
 });
 
@@ -43,10 +43,9 @@ Ahora necesitaremos requerir el paquete en routes/auth.js:
 
 ```js
 // ... inside of app.js
-const bcrypt = require("bcryptjs");
-const bcryptSalt = 10;
 
-const jwt = require("jsonwebtoken"); // <<<< ESTA LINEA
+// ...
+// --> requerimos paquete 'jsonwebtoken' <--
 
 // ...
 ```
@@ -60,27 +59,31 @@ En la carpeta raíz, crearemos el archivo /helpers/middleware.js
 ```js
 // /helpers/middleware.js
 
+// requerimos paquete 'jsonwebtoken'
 const jwt = require("jsonwebtoken");
 
+// declaramos una variable con el valor de nuestro SECRET_SESSION en el fichero .env
 const secret = process.env.SECRET_SESSION;
 
+// tramos a nuestro modelo User
 const User = require("../models/user");
 
+// declaramos la función withAuth y la definimos asíncrona
 const withAuth = async (req, res, next) => {
   try {
-    // obtenemos el token de las cookies
-    const token = req.cookies.token;
+    // 1ro - btenemos el token de las cookies
     // si no hay token, seteamos el valor de la variable isUserLoggedIn en false y pasamos el control a la siguiente función de middleware
     if (!token) {
-      res.locals.isUserLoggedIn = false;
+    // utilizamos el objeto res.locals para declarar una variable "isUserLoggedIn" que definiremos inicialmente como 'false'
       next();
     } else {
-      // verificamos el token
-      const decoded = await jwt.verify(token, secret);
+      // verificamos el token con el método verify de jwt
 
       // si el token valida, configuramos req.userID con el valor del decoded userID
       req.userID = decoded.userID;
-      res.locals.currentUserInfo = await User.findById(req.userID);
+      // ... y con él, hacemos una búsqueda del usuario por ID y lo metemos en la variable 'currentUserInfo'de nuestro objeto res.locals...
+      
+      //  ... y cambiamos el valor de 'isUserLoggedIn' a 'true' ya que ahora verificamos que el usuario está
       res.locals.isUserLoggedIn = true;
       next();
     }
@@ -118,18 +121,12 @@ Verifique las actualizaciones de nuestro archivo routes/auth.js:
 
 ```js
 // ... inside of routes/auth.js
-router.get('/login', (req, res, next) => {
-  res.render('auth/login', {
-    errorMessage: ''
-  });
-});
 
 router.post("/login", async (req, res) => { // <<<< ESTA RUTA
   // desestructuramos el email y el password de req.body
-  const { email, password } = req.body;
 
   // si alguna de estas variables no tiene un valor, renderizamos la vista de auth/signup con un mensaje de error
-  if (email === "" || password === "") {
+  if (/* condición */)) {
     res.render("auth/login", {
       errorMessage: "Please enter both, username and password to sign up.",
     });
@@ -140,29 +137,31 @@ router.post("/login", async (req, res) => { // <<<< ESTA RUTA
     // revisamos si el usuario existe en la BD
     const user = await User.findOne({ email });
     // si el usuario no existe, renderizamos la vista de auth/login con un mensaje de error
-    if (!user) {
+    if (/* condición */) {
       res.render("auth/login", {
         errorMessage: "The email doesn't exist.",
       });
       return;
     }
-    // si el usuario existe, hace hash del password y lo compara con el de la BD
-    else if (bcrypt.compareSync(password, user.password)) {
+    // si el usuario existe, hace hash del password y lo compara con el de la BD (con el método de bcrypt de compareSync)
+    else if (/* condición */)) {
       // Issue token
+      // buscamos nuestro usuario por 'email' y tramos toda la información salvo por el password (método select) y lo metemos en una variable.
       const userWithoutPass = await User.findOne({ email }).select("-password");
+      // definimos nuestro payload	
       const payload = { userID: userWithoutPass._id };
       //console.log('payload', payload);
       // si coincide, creamos el token usando el método sign, el string de secret session y el expiring time
       const token = jwt.sign(payload, process.env.SECRET_SESSION, {
         expiresIn: "1h",
       });
-      // enviamos en la respuesta una cookie con el token y luego redirigimos a la home
-      res.cookie("token", token, { httpOnly: true });
-      res.status(200).redirect("/");
+      
+        // enviamos en la respuesta una cookie con el token (recordar agregar el {httpOnly: true} en la respuesta) y luego redirigimos a la home
+    
     } else {
-      // en caso contrario, renderizamos la vista de auth/login con un mensaje de error
-      res.render("auth/login", {
-        errorMessage: "Incorrect password",
+      
+        // en caso contrario, renderizamos la vista de auth/login con un mensaje de error
+      
       });
     }
   } catch (error) {
@@ -172,14 +171,6 @@ router.post("/login", async (req, res) => { // <<<< ESTA RUTA
 
 module.exports = router;
 ```
-
-Aspectos destacados de esta ruta POST:
-
-    Línea 84: encuentra al usuario por su email.
-    
-    Línea 93: utiliza el método compareSync() para verificar la contraseña.
-    
-    Línea 103: si todo funciona, envia en la respuesta una cookie con el token.
 
 Así que hemos iniciado sesión, pero no lo sabría simplemente mirando la página de inicio. ¡Se ve igual que antes! Necesitamos personalizar la homepage para los usuarios registrados. Sin embargo, antes de hacer eso, hagamos que sea más fácil verificar el estado de inicio de sesión en la vista.
 
@@ -211,4 +202,4 @@ Destacar:
     Lines 4-6: una declaración if muestra un mensaje especial para los usuarios registrados.
     Lines 10-17: una declaración if..else muestra algunos de los enlaces a usuarios registrados y otros a usuarios anónimos.
 
-Siguiente - Log Out.
+Siguiente - Log Out.	

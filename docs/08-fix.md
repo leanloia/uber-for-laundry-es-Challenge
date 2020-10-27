@@ -7,17 +7,23 @@ Cambie el filtro de búsqueda en la ruta '/launderers' para que podamos ver todo
 router.get("/launderers", withAuth, async (req, res, next) => {
   try {
     const launderersList = await User.find({
+        // realizamos la búsqueda y filtramos entre los User que...
       $and: [
-        { isLaunderer: true },
-        { _id: { $ne: req.userID } },
+          // ... sean launderers,
+        { /* condición */ },
+          // ... y no sean 'yo' mismo
+        { /* condición */ },
       ],
     });
-    res.render("laundry/launderers", {
-      launderers: launderersList,
+
+      // renderizo 'launderers' con la información que acabo de filtrar en launderersList
+
     });
   } catch (error) {
     next(err);
     return;
   }
 });
+
+module.exports = router;
 ```
