@@ -20,9 +20,6 @@ router.get("/launderers", withAuth, async (req, res, next) => {
 
       // renderizamos nuestra vista 'launderers' con el resultado de nuestra búsqueda
 
-      res.render("laundry/launderers", {
-        launderers: launderersList,
-      });
   } catch (error) {
     next(err);
     return;

@@ -80,11 +80,11 @@ router.post("/launderers", withAuth, async (req, res, next) => {
 
     const laundererInfo = {
     fee: /* valor traido desde el form */
-    isLaunderer: /* valor traido desde el form */,
+    isLaunderer: true,
   };
 
   try {
-      // hacemos una búsqueda de User por ID para modificarlo, y le pasamos la información que acabamos de definir, y lo metemos en una variable...
+      // hacemos una búsqueda de User por ID para modificarlo, y le pasamos la información que acabamos de definir, y lo guardamos en una variable...
 
       const theUser = /* busqueda y actualización de nuestro usuario */
 
@@ -184,7 +184,7 @@ router.get("/dashboard", withAuth, async (req, res, next) => {
   } else {
 
     // en caso contrario (si no hay token) redirigimos a la home
-    // definimos la respuesta con status 401, y renderizamos nuestra vista 'home' con un errorMessage ('Unauthorized: No token provided')
+    // otra opción es definir la respuesta con status 401, y renderizamos nuestra vista 'home' con un errorMessage ('Unauthorized: No token provided')
 
   }
 });
