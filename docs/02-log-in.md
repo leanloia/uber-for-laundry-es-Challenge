@@ -180,13 +180,15 @@ Aquí está nuestro archivo de plantilla views/index.hbs actualizado:
 <!-- views/index.hbs -->
 <p> Welcome to {{ title }}. </p>
 
-{{#if isUserLoggedIn}}
+<!-- validamos que el usuario esté logueado para mostrar un mensaje personalizado -->
+{{#if <!-- condición -->}}
   <p> Hello, {{ currentUserInfo.name }}. </p>
 {{/if}}
 
 <nav>
   <ul>
-    {{#if isUserLoggedIn}}
+  <!-- validamos que el usuario esté logueado para mostrar diferentes opciones en la navbar-->
+    {{#if <!-- condición -->}}
      <li> <a href="/launderers"> Find a Launderer </a> </li>
       <li> <a href="/dashboard"> See Dashboard </a> </li>
       <li> <a href="/logout"> Log Out </a> </li>
@@ -197,9 +199,6 @@ Aquí está nuestro archivo de plantilla views/index.hbs actualizado:
   </ul>
 </nav>
 ```
-Destacar:
 
-    Lines 4-6: una declaración if muestra un mensaje especial para los usuarios registrados.
-    Lines 10-17: una declaración if..else muestra algunos de los enlaces a usuarios registrados y otros a usuarios anónimos.
 
 Siguiente - Log Out.	
