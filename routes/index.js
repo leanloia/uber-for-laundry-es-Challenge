@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
+const withAuth = require("../helpers/middleware");
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', withAuth, (req, res, next) => {
+  res.render('index', { title: 'Uber for Laundry' });
 });
 
 module.exports = router;
